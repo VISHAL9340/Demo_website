@@ -1,2 +1,3 @@
-Pillow==10.2.0
-yt-dlp==2024.02.04
+streamlit
+Pillow
+yt-dlp
