@@ -1,48 +1,39 @@
-from tkinter import *
-from PIL import ImageTk, Image
-import tkinter.font as font
-from tkinter import messagebox
+import streamlit as st
 import yt_dlp
+import time
 
-root = Tk()
-root.title("Instagram Reel Downloader")
-root.minsize(600, 500)
-root.maxsize(600, 500)
+# Streamlit UI Setup
+st.set_page_config(page_title="Instagram Reel Downloader", page_icon="🎥", layout="centered")
 
-FONT = font.Font(family="Times New Roman", size=18, weight="bold")
+st.title("📥 Instagram Reel Downloader")
+st.markdown("🔹 Download Instagram reels easily by pasting the link below.")
 
-def download(link):
-    try:
-        if link:
+# Input Box for Instagram Reel Link
+link = st.text_input("📌 Enter Instagram Reel Link:", placeholder="Paste the Instagram reel URL here")
+
+# Download Button
+if st.button("🚀 Download Reel"):
+    if link:
+        try:
+            st.info("🔄 Downloading... Please wait.")
+            
+            # YT-DLP Options for Download
             ydl_opts = {
-                'outtmpl': f"reel_{int(time.time())}.mp4",
-                'format': 'bestvideo+bestaudio/best',
+                'outtmpl': f"reel_{int(time.time())}.mp4",  # Save file as reel_timestamp.mp4
+                'format': 'bestvideo+bestaudio/best',  # Best available quality
             }
+            
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([link])
-            messagebox.showinfo("Status", "Reel downloaded successfully")
-        else:
-            messagebox.showwarning("Empty field", "Please fill out the field")
-    except Exception as e:
-        messagebox.showerror("Error", f"Something went wrong: {e}")
+            
+            st.success("✅ Reel downloaded successfully!")
+            st.balloons()  # Celebration effect
+            
+        except Exception as e:
+            st.error(f"❌ Something went wrong: {e}")
+    else:
+        st.warning("⚠ Please enter a valid Instagram reel link.")
 
-canvas = Canvas(root, height=500, width=600)
-canvas.pack()
-
-frame = Frame(root, bg="white")
-frame.place(relwidth=1, relheight=1)
-
-label1 = Label(frame, text="Download Reels in a Click!", font=FONT, bd=5, fg="#0d1137", bg="white")
-label1.place(relx=0.25, rely=0.1, relheight=0.1)
-
-FONT_SMALL = font.Font(family="Times New Roman", size=12, weight="bold")
-label2 = Label(frame, text="Enter link address:", font=FONT_SMALL, bd=5, fg="#e52165", bg="white")
-label2.place(relx=0.25, rely=0.25, relheight=0.1)
-
-entry = Entry(frame, font=FONT_SMALL, fg="#fbad50")
-entry.place(relx=0.25, rely=0.35, relwidth=0.5, relheight=0.05)
-
-button1 = Button(root, text="Download", font=FONT_SMALL, bg="pink", fg="black", command=lambda: download(entry.get()))
-button1.place(relx=0.4, rely=0.45, relwidth=0.2, relheight=0.06)
-
-root.mainloop()
+# Footer
+st.markdown("---")
+st.caption("💡 Built with ❤️ using Streamlit & YT-DLP")
